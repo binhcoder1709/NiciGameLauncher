@@ -8,6 +8,7 @@ import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
 import Detail from "./pages/Detail";
 import Checkout from "./pages/Checkout";
+import Login from "./pages/Login";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/detail" element={<Detail />} />
         </Route>
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/login" element={<Login/>}/>
       </Routes>
     </>
   );

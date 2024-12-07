@@ -1,8 +1,19 @@
 import MainNav from "../components/nav";
 import MainHeader from "../components/header";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import { useEffect } from "react";
 
 export default function MainLayout() {
+  const navigate = useNavigate();
+  const checkCookie = () => {
+    if (!Cookies.get("AT") || !Cookies.get("RT") || !Cookies.get("data")) {
+      navigate("/login");
+    }
+  };
+  useEffect(() => {
+    checkCookie();
+  }, []);
   return (
     <div className="w-full flex">
       <div className="w-[16%] h-screen ">
