@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import MainLogo from "../components/logo/MainLogo";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -13,6 +13,7 @@ interface FormValue {
 }
 
 const Login: React.FC = () => {
+  const [error, setError] = useState<string>();
   const navigate = useNavigate();
   const formik = useFormik<FormValue>({
     initialValues: {
@@ -36,13 +37,15 @@ const Login: React.FC = () => {
           data
         );
         if (response.status === 200) {
-          Cookies.set("AT", response.data.AT);
-          Cookies.set("RT", response.data.RT);
-          Cookies.set("id", JSON.stringify(response.data.data));
+          Cookies.set("AT", JSON.stringify(response.data.data?.AT));
+          Cookies.set("RT", JSON.stringify(response.data.data?.RT));
+          Cookies.set("user", JSON.stringify(response.data.data?.user));
           navigate("/");
         }
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (error.response) {
+          setError(error.response.data.error.message);
+        }
       }
     },
   });
@@ -146,6 +149,7 @@ const Login: React.FC = () => {
                     Log in
                   </button>
                 </div>
+                <span className="text-red-500">{error}</span>
                 <p className="text-sm !mt-8 text-center text-white">
                   Don't have an account{" "}
                   <a

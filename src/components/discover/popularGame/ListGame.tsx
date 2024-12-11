@@ -1,11 +1,31 @@
 import { Link } from "react-router-dom";
+import { formatVND } from "../../../utils/formatMoney";
+import { useEffect, useState } from "react";
+import { IGame } from "../../../interfaces/game";
+import Cookies from "js-cookie";
+import { userUrl } from "../../../apis";
+import { IDashboardResponse } from "../../../interfaces/user";
 
 export default function ListGame() {
+  const [games, setGames] = useState<IGame[]>();
+ 
+  const fetchData = async () => {
+    try {
+      const response = await userUrl.get<IDashboardResponse>(`/dashboard`);
+      setGames(response.data.data?.games);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const data = [
     {
       name: "Industry giant 4.0",
       image:
-        "https://cdn1.epicgames.com/spt-assets/b7d55c5d63d54d3985b57c35af336be9/industry-giant-40-1ysbq.jpg?resize=1&w=360&h=480&quality=medium",
+        "https://firebasestorage.googleapis.com/v0/b/tommy-studio-93d6f.appspot.com/o/game_assets%2Funnamed.png?alt=media&token=a91a924a-851e-4290-9a11-c58b7d6221ef",
       price: 0,
     },
     {
@@ -18,7 +38,7 @@ export default function ListGame() {
       name: "blade of god x: orisols",
       image:
         "https://cdn1.epicgames.com/spt-assets/557fb2a2e101498bb9fe6998ee36154b/blade-of-god-x-15b0l.jpg?resize=1&w=360&h=480&quality=medium",
-      price: 0, 
+      price: 0,
     },
     {
       name: "AWAKEN - astral blade",
@@ -36,19 +56,19 @@ export default function ListGame() {
   return (
     <>
       <div className="flex justify-between">
-        {data.map((item, index) => (
+        {games?.map((item, index) => (
           <div key={index} className="w-[19%] flex flex-col gap-2">
-            <Link to={"/detail"}>
+            <Link to={`/detail/${item.id}`}>
               <img
-                className="w-full h-[300px] transition rounded-lg hover:brightness-125 active:brightness-110"
-                src={item.image}
+                className="w-full h-[300px] transition object-cover rounded-lg hover:brightness-125 active:brightness-110"
+                src={item.banner_image}
                 alt=""
               />
             </Link>
             <span className="text-xs text-white/50">Base Game</span>
-            <p className="font-bold capitalize">{item.name}</p>
+            <p className="font-bold capitalize">{item.game_name}</p>
             <span className="text-sm text-white font-semibold">
-              {item.price === 0 ? "Free" : `${item.price} đ`}
+              {item.price === 0 ? "Free" : `${formatVND(item.price)}`}
             </span>
           </div>
         ))}

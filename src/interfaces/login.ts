@@ -1,11 +1,18 @@
 export interface ILoginResponse {
-  AT: string;
-  RT: string;
+  status: "success" | "error";
   data: {
-    id: string;
-    user_name: string;
-    email: string;
-    avatar: string;
+    AT: string;
+    RT: string;
+    user:{
+      id: string
+      email: string
+      avatar: string
+      user_name: string
+    }
+  } | null;
+  error: null | {
+    statusCode: number;
+    message: string;
   };
 }
 

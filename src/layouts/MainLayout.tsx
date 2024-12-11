@@ -7,7 +7,7 @@ import { useEffect } from "react";
 export default function MainLayout() {
   const navigate = useNavigate();
   const checkCookie = () => {
-    if (!Cookies.get("AT") || !Cookies.get("RT") || !Cookies.get("data")) {
+    if (!Cookies.get("AT") || !Cookies.get("RT") || !Cookies.get("user")) {
       navigate("/login");
     }
   };

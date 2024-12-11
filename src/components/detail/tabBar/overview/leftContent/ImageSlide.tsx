@@ -1,18 +1,19 @@
-import { useState } from "react";
-import vid1 from "../../../../../assets/dev/blade-of-god-x-14r6p.png";
-import vid2 from "../../../../../assets/dev/blade-of-god-x-1eq1s.png";
-import vid3 from "../../../../../assets/dev/blade-of-god-x-1v2p9.png";
-import vid4 from "../../../../../assets/dev/blade-of-god-x-72o6d.png";
-import vid5 from "../../../../../assets/dev/blade-of-god-x-b65kz.png";
-import vid6 from "../../../../../assets/dev/blade-of-god-x-zhw4z.png";
+import { FC, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { gameUrl } from "../../../../../apis";
+import { IGame, IGameResponse } from "../../../../../interfaces/game";
 
-export default function ImageSlide() {
-  const images: string[] = [vid1, vid2, vid3, vid4, vid5, vid6, vid1];
+interface Props {
+  gameData: IGame;
+}
+
+const ImageSlide: FC<Props> = ({ gameData }) => {
   const [currentImage, setCurrentImage] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(0);
+  const { id } = useParams();
   const imagesPerPage = 6;
 
-  const totalPages = Math.ceil(images.length / imagesPerPage);
+  const totalPages = Math.ceil(gameData.slide_images.length / imagesPerPage);
 
   const handleSelectImage = (index: number): void => {
     setCurrentImage(index);
@@ -28,15 +29,14 @@ export default function ImageSlide() {
 
   const getVisibleImages = () => {
     const start = currentPage * imagesPerPage;
-    return images.slice(start, start + imagesPerPage);
+    return gameData.slide_images.slice(start, start + imagesPerPage);
   };
-
   return (
     <div className="w-full flex flex-col gap-4">
       <div>
         <img
           className="w-full rounded-lg h-[450px] object-cover"
-          src={images[currentImage]}
+          src={gameData.slide_images[currentImage]}
           alt="Selected"
         />
       </div>
@@ -108,4 +108,6 @@ export default function ImageSlide() {
       </div>
     </div>
   );
-}
+};
+
+export default ImageSlide;

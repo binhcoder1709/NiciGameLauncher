@@ -6,9 +6,37 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import InstallGameModal from "./InstallGameModal";
+import { useEffect, useState } from "react";
+import { IGame, IGameResponse } from "../../../../interfaces/game";
+import { userUrl } from "../../../../apis";
+import Cookies from "js-cookie";
+import { IUserLibraryResponse } from "../../../../interfaces/user";
 
 export default function ListGame() {
+  const [games, setGames] = useState<IGame[]>([]);
+  console.log(games);
+  
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const userCookie = Cookies.get("user");
+  if (!userCookie) return;
+  const parseCookie = JSON.parse(userCookie);
+
+  const fetchData = async () => {
+    try {
+      const response = await userUrl.get<IUserLibraryResponse>(
+        `/library/${parseCookie.id}`
+      );
+      if (response.status === 200 && response.data.data)
+        setGames(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   const data = [
     {
       name: "Industry giant 4.0",
@@ -50,19 +78,19 @@ export default function ListGame() {
   return (
     <>
       <div className="flex justify-between gap-y-5 flex-wrap">
-        {data.map((item, index) => (
+        {games.map((item, index) => (
           <div key={index} className="w-[19%] flex flex-col gap-1">
             <button onClick={onOpen}>
               <img
-                className="w-full h-[300px] transition rounded-lg hover:brightness-125 active:brightness-110"
-                src={item.image}
+                className="w-full h-[300px] object-cover transition rounded-lg hover:brightness-125 active:brightness-110"
+                src={item.banner_image}
                 alt=""
               />
             </button>
             <InstallGameModal onOpenChange={onOpenChange} isOpen={isOpen} />
             <div className="flex justify-between">
               <p className="font-bold capitalize text-ellipsis text-nowrap overflow-hidden">
-                {item.name}
+                {item.game_name}
               </p>
               <Dropdown className="bg-black">
                 <DropdownTrigger>
